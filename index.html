@@ -54,10 +54,24 @@ const qwrap=document.getElementById('questions'); let total=0;
 Object.entries(sections).forEach(([section,qs])=>{const h=document.createElement('h2');h.textContent=section;qwrap.appendChild(h);qs.forEach((q,i)=>{total++;const key=`${section}_${i}`.toLowerCase().replace(/[^a-z0-9]+/g,'_');const d=document.createElement('div');d.className='q';d.innerHTML=`<div class='qtext'>${q}</div><input type='hidden' name='${key}' id='${key}' value=''><div class='yn'><button type='button' data-k='${key}' data-v='Yes'>Yes</button><button type='button' data-k='${key}' data-v='No'>No</button></div>`;qwrap.appendChild(d);});});
 document.getElementById('total').textContent=total;
 function count(){document.getElementById('answered').textContent=[...document.querySelectorAll('input[type=hidden]')].filter(i=>i.value).length}
-document.addEventListener('click',e=>{if(!e.target.matches('.yn button')) return; const k=e.target.dataset.k,v=e.target.dataset.v; document.getElementById(k).value=v; document.querySelectorAll(`button[data-k="${k}"]`).forEach(b=>b.classList.remove('active')); e.target.classList.add('active'); e.target.classList.add(v==='Yes'?'yes':'no'); count();});
+function syncFields(){
+  document.querySelectorAll('.q').forEach(q=>{
+    const key=q.querySelector('input[type=hidden]').name;
+    const yes=q.querySelector('button.yes');
+    const no=q.querySelector('button.no');
+    let value='';
+    if(yes.classList.contains('active')) value='Yes';
+    if(no.classList.contains('active')) value='No';
+    let hidden=form.querySelector(`input[name="${key}"]`);
+    if(!hidden){ hidden=document.createElement('input'); hidden.type='hidden'; hidden.name=key; form.appendChild(hidden); }
+    hidden.value=value;
+  });
+}
+document.addEventListener('click',e=>{if(!e.target.matches('.yn button')) return; const k=e.target.dataset.k,v=e.target.dataset.v; document.getElementById(k).value=v; document.querySelectorAll(`button[data-k="${k}"]`).forEach(b=>b.classList.remove('active')); e.target.classList.add('active'); e.target.classList.add(v==='Yes'?'yes':'no'); count(); syncFields();});
 const form=document.getElementById('form');
 form.addEventListener('submit', async e => {
   e.preventDefault();
+  syncFields();
   const data = new FormData(form);
   const body = new URLSearchParams(data).toString();
   const res = await fetch('/', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body });
