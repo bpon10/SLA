@@ -26,58 +26,131 @@
     <h1>Stock Loss Assessment</h1>
     <div class="small">Complete on a phone, then submit to email the report for review.</div>
     <div class="progress">Answered: <span id="answered">0</span> / <span id="total">0</span></div>
+
     <form id="form" name="stock-loss-assessment" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
       <input type="hidden" name="form-name" value="stock-loss-assessment" />
       <p style="display:none;"><label>Don’t fill this out: <input name="bot-field" /></label></p>
+
       <div class="meta">
         <div><label>Name</label><input type="text" name="name" required></div>
         <div><label>TM Number</label><input type="text" name="tmNumber" required></div>
       </div>
+
       <div id="questions"></div>
+
       <h2>Final Details</h2>
       <label>Notes</label><textarea name="notes"></textarea>
       <label>Who we coached</label><input type="text" name="coached">
+
       <button class="submit" type="submit">Submit report</button>
       <div class="status small" id="status"></div>
     </form>
   </div>
-<script>
-const sections={
-"Front End":["Is the people greeter in position, conducting receipt and bag checks?","Are all closed registers secured with yellow chain?","Is the BSCO Register Operator in position, engaging customers and conducting BOBLISACURT?","Are all front end Register Operator conducting BOBLISACURT?"],
-"Tool Shop":["Is the Toolshop Register Operator in position, engaging customers and conducting BOBLISACURT?","Are all perspex displays in the tool shop locked?","Are the relevant hammer brackets in place and locked?","Is there at least one team member on the shopfloor within the tool shop?","Is all protected stock bound for the Tool Shop found inside the Tool Shop including bulk pallets?"],
-"Gate Keeper":["Is the Gate Keeper in position, wearing a push-to-talk and with a Zebra in-hand or nearby i.e., within 10 steps?","Is the boom gate only opened for exiting customers and in the down position at all other times?","Are vehicle checks occurring in the timber yard?"],
-"Protection":["Is the site clear of high risk outbound deliveries in the timber yard?","Are all gates and doors leading to an external area locked?","Does the store have all pay-before-pick-up product stored behind the service desk or in GI i.e., not live on shelf?"],
-"Goods Inwards":["Is the CRC process being followed daily including commentary Specific commentary, CRC return slip affixed, no old draft cartons","Is there claimed stock in Goods Inward older than than 4 weeks?","Does the store have any sellable stock subject to damage or theft Power tools, timber, CRC item etc being left in the lanewayexternal GI overnight where weather or theft could have a financial impact?","Was Goods Inwards cleared the night before No more than 8 pallets or cages not worked?","Are cages set up with no double stacking of mixed products and loaded in a way that allows replenishment moving one way down the aisle?","Have invoices been removed from all pallets excluding deliveries from the last two hours?"],
-"Nursery":["Is the Nursery People Greeter in position, wearing a push-to-talk with a Zebra in-hand or nearby i.e., within 10 steps, and conducting bag checks?","Is the Nursery Register Operator conducting BOBLISACURT and bag checks?","Has the store marked down past-best plants with clearance prices?"]
-};
-const qwrap=document.getElementById('questions'); let total=0;
-Object.entries(sections).forEach(([section,qs])=>{const h=document.createElement('h2');h.textContent=section;qwrap.appendChild(h);qs.forEach((q,i)=>{total++;const key=`${section}_${i}`.toLowerCase().replace(/[^a-z0-9]+/g,'_');const d=document.createElement('div');d.className='q';d.innerHTML=`<div class='qtext'>${q}</div><input type='hidden' name='${key}' id='${key}' value=''><div class='yn'><button type='button' data-k='${key}' data-v='Yes'>Yes</button><button type='button' data-k='${key}' data-v='No'>No</button></div>`;qwrap.appendChild(d);});});
-document.getElementById('total').textContent=total;
-function count(){document.getElementById('answered').textContent=[...document.querySelectorAll('input[type=hidden]')].filter(i=>i.value).length}
-function syncFields(){
-  document.querySelectorAll('.q').forEach(q=>{
-    const key=q.querySelector('input[type=hidden]').name;
-    const yes=q.querySelector('button.yes');
-    const no=q.querySelector('button.no');
-    let value='';
-    if(yes.classList.contains('active')) value='Yes';
-    if(no.classList.contains('active')) value='No';
-    let hidden=form.querySelector(`input[name="${key}"]`);
-    if(!hidden){ hidden=document.createElement('input'); hidden.type='hidden'; hidden.name=key; form.appendChild(hidden); }
-    hidden.value=value;
-  });
-}
-document.addEventListener('click',e=>{if(!e.target.matches('.yn button')) return; const k=e.target.dataset.k,v=e.target.dataset.v; document.getElementById(k).value=v; document.querySelectorAll(`button[data-k="${k}"]`).forEach(b=>b.classList.remove('active')); e.target.classList.add('active'); e.target.classList.add(v==='Yes'?'yes':'no'); count(); syncFields();});
-const form=document.getElementById('form');
-form.addEventListener('submit', async e => {
-  e.preventDefault();
-  syncFields();
-  const data = new FormData(form);
-  const body = new URLSearchParams(data).toString();
-  const res = await fetch('/', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body });
-  document.getElementById('status').textContent = res.ok ? 'Submitted successfully.' : 'Submit failed.';
-  if (res.ok) form.reset();
-});
-</script>
+
+  <form name="stock-loss-assessment" method="POST" data-netlify="true" hidden>
+    <input type="hidden" name="form-name" value="stock-loss-assessment" />
+    <input type="text" name="name" />
+    <input type="text" name="tmNumber" />
+    <input type="hidden" name="front_end_0" />
+    <input type="hidden" name="front_end_1" />
+    <input type="hidden" name="front_end_2" />
+    <input type="hidden" name="front_end_3" />
+    <input type="hidden" name="tool_shop_0" />
+    <input type="hidden" name="tool_shop_1" />
+    <input type="hidden" name="tool_shop_2" />
+    <input type="hidden" name="tool_shop_3" />
+    <input type="hidden" name="tool_shop_4" />
+    <input type="hidden" name="gate_keeper_0" />
+    <input type="hidden" name="gate_keeper_1" />
+    <input type="hidden" name="gate_keeper_2" />
+    <input type="hidden" name="protection_0" />
+    <input type="hidden" name="protection_1" />
+    <input type="hidden" name="protection_2" />
+    <input type="hidden" name="goods_inwards_0" />
+    <input type="hidden" name="goods_inwards_1" />
+    <input type="hidden" name="goods_inwards_2" />
+    <input type="hidden" name="goods_inwards_3" />
+    <input type="hidden" name="goods_inwards_4" />
+    <input type="hidden" name="goods_inwards_5" />
+    <input type="hidden" name="nursery_0" />
+    <input type="hidden" name="nursery_1" />
+    <input type="hidden" name="nursery_2" />
+    <textarea name="notes"></textarea>
+    <input type="text" name="coached" />
+  </form>
+
+  <script>
+    const sections={
+      "Front End":["Is the people greeter in position, conducting receipt and bag checks?","Are all closed registers secured with yellow chain?","Is the BSCO Register Operator in position, engaging customers and conducting BOBLISACURT?","Are all front end Register Operator conducting BOBLISACURT?"],
+      "Tool Shop":["Is the Toolshop Register Operator in position, engaging customers and conducting BOBLISACURT?","Are all perspex displays in the tool shop locked?","Are the relevant hammer brackets in place and locked?","Is there at least one team member on the shopfloor within the tool shop?","Is all protected stock bound for the Tool Shop found inside the Tool Shop including bulk pallets?"],
+      "Gate Keeper":["Is the Gate Keeper in position, wearing a push-to-talk and with a Zebra in-hand or nearby i.e., within 10 steps?","Is the boom gate only opened for exiting customers and in the down position at all other times?","Are vehicle checks occurring in the timber yard?"],
+      "Protection":["Is the site clear of high risk outbound deliveries in the timber yard?","Are all gates and doors leading to an external area locked?","Does the store have all pay-before-pick-up product stored behind the service desk or in GI i.e., not live on shelf?"],
+      "Goods Inwards":["Is the CRC process being followed daily including commentary Specific commentary, CRC return slip affixed, no old draft cartons","Is there claimed stock in Goods Inward older than than 4 weeks?","Does the store have any sellable stock subject to damage or theft Power tools, timber, CRC item etc being left in the lanewayexternal GI overnight where weather or theft could have a financial impact?","Was Goods Inwards cleared the night before No more than 8 pallets or cages not worked?","Are cages set up with no double stacking of mixed products and loaded in a way that allows replenishment moving one way down the aisle?","Have invoices been removed from all pallets excluding deliveries from the last two hours?"],
+      "Nursery":["Is the Nursery People Greeter in position, wearing a push-to-talk with a Zebra in-hand or nearby i.e., within 10 steps, and conducting bag checks?","Is the Nursery Register Operator conducting BOBLISACURT and bag checks?","Has the store marked down past-best plants with clearance prices?"]
+    };
+
+    const qwrap=document.getElementById('questions');
+    let total=0;
+    Object.entries(sections).forEach(([section,qs])=>{
+      const h=document.createElement('h2');
+      h.textContent=section;
+      qwrap.appendChild(h);
+      qs.forEach((q,i)=>{
+        total++;
+        const key=`${section}_${i}`.toLowerCase().replace(/[^a-z0-9]+/g,'_');
+        const d=document.createElement('div');
+        d.className='q';
+        d.innerHTML=`<div class='qtext'>${q}</div><input type='hidden' name='${key}' id='${key}' value=''><div class='yn'><button type='button' data-k='${key}' data-v='Yes'>Yes</button><button type='button' data-k='${key}' data-v='No'>No</button></div>`;
+        qwrap.appendChild(d);
+      });
+    });
+    document.getElementById('total').textContent=total;
+
+    function count(){document.getElementById('answered').textContent=[...document.querySelectorAll('input[type=hidden]')].filter(i=>i.value).length}
+    function syncFields(){
+      document.querySelectorAll('.q').forEach(q=>{
+        const key=q.querySelector('input[type=hidden]').name;
+        const yes=q.querySelector('button.yes');
+        const no=q.querySelector('button.no');
+        let value='';
+        if(yes.classList.contains('active')) value='Yes';
+        if(no.classList.contains('active')) value='No';
+        let hidden=document.querySelector(`form[name="stock-loss-assessment"][hidden] input[name="${key}"]`);
+        if(!hidden){
+          hidden=document.createElement('input');
+          hidden.type='hidden';
+          hidden.name=key;
+          document.querySelector('form[name="stock-loss-assessment"][hidden]').appendChild(hidden);
+        }
+        hidden.value=value;
+      });
+    }
+
+    document.addEventListener('click',e=>{
+      if(!e.target.matches('.yn button')) return;
+      const k=e.target.dataset.k,v=e.target.dataset.v;
+      document.getElementById(k).value=v;
+      document.querySelectorAll(`button[data-k="${k}"]`).forEach(b=>b.classList.remove('active'));
+      e.target.classList.add('active');
+      e.target.classList.add(v==='Yes'?'yes':'no');
+      count();
+      syncFields();
+    });
+
+    const form=document.getElementById('form');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      syncFields();
+      const data = new FormData(form);
+      const body = new URLSearchParams(data).toString();
+      const res = await fetch('/form.html', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body
+      });
+      document.getElementById('status').textContent = res.ok ? 'Submitted successfully.' : 'Submit failed.';
+      if (res.ok) form.reset();
+    });
+  </script>
 </body>
 </html>
